@@ -1,10 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-const DummyComp = () => {
+const DummyComp = ({navigation}) => {
     return (
         <View style={styles.container}>
             <Text style={styles.DummyComp}>Diplomski</Text>
+            <Button onPress={() => navigation.navigate('Register')} title={'navigiraj'}/>
         </View>
     )
 }

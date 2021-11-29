@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { Text, View } from "react-native";
 import { useUser, useUserUpdate } from "../AuthProvider/AuthProvider";
+import Dummy2 from "../Components/Dummy2";
 import DummyComp from "../Components/DummyComp";
 
 const Stack = createNativeStackNavigator();
@@ -68,7 +69,7 @@ export default function MyScreens() {
             />
             <Stack.Screen
                 name="Register"
-                component={DummyComp}
+                component={Dummy2}
                 options={{headerShown: false}}
             />
             <Stack.Screen
