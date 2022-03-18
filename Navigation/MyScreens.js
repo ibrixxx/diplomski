@@ -3,49 +3,72 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { Text, View } from "react-native";
 import { useUser, useUserUpdate } from "../AuthProvider/AuthProvider";
-import Dummy2 from "../Components/Dummy2";
 import DummyComp from "../Components/DummyComp";
+import LoginScreen from "../Screens/LoginScreen";
+import EventsScreen from "../Screens/EventsScreen";
+import GuestsScreen from "../Screens/GuestsScreen";
+import DetailsScreen from "../Screens/DetailsScreen";
+import ScanQrCode from "../Screens/ScanQrCode";
+import AddGuestScreen from "../Screens/AddGuestScreen";
 
 const Stack = createNativeStackNavigator();
 
 const authTabs = () => <Stack.Screen
     name="AuthTabs"
-    component={DummyComp}
+    component={LoginScreen}
     options={{headerShown: false}}
 />
 
-const appTabs = () => <Stack.Screen
-    name="AppTabs"
-    component={DummyComp}
-    options={{headerShown: false}}
-/>
+const appTabs = () =>
+    <>
+        <Stack.Screen
+            name="Events"
+            component={EventsScreen}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen
+            name="Guests"
+            component={GuestsScreen}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen
+            name="Details"
+            component={DetailsScreen}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen
+            name="Scan"
+            component={ScanQrCode}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen
+            name="AddNew"
+            component={AddGuestScreen}
+            options={{headerShown: false}}
+        />
+    </>
 
 export default function MyScreens() {
     const user = useUser()
     const setUser = useUserUpdate()
     const [isReady, setIsReady] = useState(false)
 
-    const isTokenExpired = (expire_date) => {
-        const expires = new Date(expire_date)
-        const today = new Date()
-        return today.getTime() >= expires.getTime();
-    }
-
-    const getData = async () => {
-        try {
-            const token = await AsyncStorage.getItem('token');
-            await setUser({...user, token: token})
-            
-        } 
-        catch (error) {
-            console.log(error);
-        }
-        finally {
-            setIsReady(true);
-        }
-    }
-
     useEffect(  () => {
+        const getData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if(token !== null)
+                    await setUser({...user, token: token, isAuthenticated: true})
+                else
+                    setUser({...user, isAuthenticated: false})
+            }
+            catch (error) {
+                console.log(error);
+            }
+            finally {
+                await setIsReady(true);
+            }
+        }
         getData()
     }, [])
 
@@ -56,35 +79,9 @@ export default function MyScreens() {
 
     return (
         <Stack.Navigator>
-            
-          <Stack.Group>
-            {user.isAuthenticated? <>{appTabs()}{authTabs()}</>:<>{authTabs()}{appTabs()}</>}
-          </Stack.Group>
 
           <Stack.Group>
-            <Stack.Screen
-                name="Login"
-                component={DummyComp}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="Register"
-                component={Dummy2}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="Verify"
-                component={DummyComp}
-                options={{headerShown: false}}
-            />
-          </Stack.Group>
-
-          <Stack.Group> 
-            <Stack.Screen
-                name="Notifications"
-                component={DummyComp}
-                options={{headerShown: false}}
-            />
+            {user.isAuthenticated? appTabs():authTabs()}
           </Stack.Group>
 
         </Stack.Navigator>

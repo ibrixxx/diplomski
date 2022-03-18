@@ -15,11 +15,7 @@ const AuthProvider = ({children}) => {
     const [user, setUser] = useState({
         isAuthenticated: false,
         token: null,
-        verified_at: null,
-        first_name: null,
-        last_name: null,
-        email: null,
-        type: 1,
+        currentEvent: null
     })
 
 
