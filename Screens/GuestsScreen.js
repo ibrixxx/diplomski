@@ -21,6 +21,7 @@ const GuestsScreen = ({navigation}) => {
                     }
                 })
                 .then(function (response) {
+                    console.log(response.data)
                     setData(response.data.data)
                 })
                 .catch(function (error) {
@@ -39,7 +40,7 @@ const GuestsScreen = ({navigation}) => {
     }
 
     const add = () => {
-        navigation.navigate('AddNew', {eventId: user.currentEvent.id})
+        navigation.navigate('AddNew', {eventId: user.currentEvent.id, guestListId: 13})
     }
 
     const onChangeSearch = query => {

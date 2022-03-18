@@ -1,37 +1,59 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Button} from 'react-native'
-import {BarCodeScanner} from "expo-barcode-scanner";
+import {View, Text, StyleSheet} from 'react-native'
+import {Camera} from "expo-camera";
+import axios from "axios";
+import {API_URL} from "../Constants/Constants";
+import {useUser} from "../AuthProvider/AuthProvider";
 
 const ScanQrCode = ({navigation}) => {
     const [hasPermission, setHasPermission] = useState(null);
-    const [scanned, setScanned] = useState(false);
+    const [type, setType] = useState(Camera.Constants.Type.back);
+    const [code, setCode] = useState(null);
+    const user = useUser()
 
     useEffect(() => {
         (async () => {
-            const { status } = await BarCodeScanner.requestPermissionsAsync();
+            const { status } = await Camera.requestCameraPermissionsAsync();
             setHasPermission(status === 'granted');
         })();
     }, []);
 
-    const handleBarCodeScanned = ({ type, data }) => {
-        setScanned(true);
-        console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
-    };
-
     if (hasPermission === null) {
-        return <Text>Requesting for camera permission</Text>;
+        return <View />;
     }
     if (hasPermission === false) {
         return <Text>No access to camera</Text>;
     }
 
-    return (
+    const getGuest = async () => {
+        if(code) {
+            const newCode = code.substring(1, code.length - 1)
+            const url = `${API_URL}/${user.currentEvent.id}/7/invitations/check/code/${newCode}`
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                }
+            });
+            const {data} = res.data;
+            await navigation.navigate('Details', {guest: data, eventId: user.currentEvent.id})
+        }
+    }
+
+    return(
         <View style={styles.container}>
-            <BarCodeScanner
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                style={StyleSheet.absoluteFillObject}
+            <Camera
+                onBarCodeScanned={async (...args) => {
+                    const data = args[0].data;
+                    const result = JSON.stringify(data);
+                    console.log(result);
+                    await setCode(result)
+                    await getGuest()
+                }}
+                barCodeScannerSettings={{
+                    barCodeTypes: ['qr'],
+                }}
+                style={{ flex: 1 }}
             />
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
         </View>
     );
 }
@@ -41,7 +63,23 @@ export default ScanQrCode
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
+    },
+    camera: {
+        flex: 1,
+    },
+    buttonContainer: {
+        flex: 1,
+        backgroundColor: 'transparent',
+        flexDirection: 'row',
+        margin: 20,
+    },
+    button: {
+        flex: 0.1,
+        alignSelf: 'flex-end',
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 18,
+        color: 'white',
     },
 });
