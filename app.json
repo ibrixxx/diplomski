@@ -1,14 +1,13 @@
 {
   "expo": {
-    "name": "diplomski",
-    "slug": "diplomski",
+    "name": "clickevent",
+    "slug": "clickevent",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/clickevent_appicon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/clickevent_splash.png",
+      "resizeMode": "cover"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.misija.clickevent"
     },
     "web": {
       "favicon": "./assets/favicon.png"

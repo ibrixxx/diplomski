@@ -3,7 +3,7 @@ import {View, Text, FlatList, TouchableOpacity, SafeAreaView} from 'react-native
 import axios from "axios";
 import {API_URL} from "../Constants/Constants";
 import {useUser, useUserUpdate} from "../AuthProvider/AuthProvider";
-import {Title} from "react-native-paper";
+import {Chip, Title} from "react-native-paper";
 
 const EventsScreen = ({navigation}) => {
     const [data, setData] = useState([])
@@ -39,7 +39,7 @@ const EventsScreen = ({navigation}) => {
             <FlatList
                 style={{height: '80%'}}
                 data={data}
-                renderItem={({item}) => <View style={{width: '100%',flex: 1, padding: '2%'}}><TouchableOpacity onPress={() => onPress(item)}><Text style={{color: 'black'}}>{item.name}</Text></TouchableOpacity></View>}
+                renderItem={({item}) => <View style={{width: '100%',flex: 1, padding: '2%'}}><Chip icon="information" onPress={() => onPress(item)}><Text style={{color: 'black', fontWeight: 'bold', fontStyle: 'italic'}}>{item.name}</Text></Chip></View>}
                 keyExtractor={item => item.id}
             />
         </SafeAreaView>

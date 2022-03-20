@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, FlatList, TouchableOpacity, SafeAreaView} from 'react-native'
+import {View, Text, FlatList, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
 import axios from "axios";
 import {API_URL} from "../Constants/Constants";
 import {useUser} from "../AuthProvider/AuthProvider";
-import {Button, Searchbar, Title} from "react-native-paper";
+import {Button, Caption, Chip, Searchbar, Title} from "react-native-paper";
+import { AntDesign } from '@expo/vector-icons'
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const GuestsScreen = ({navigation}) => {
     const [data, setData] = useState([])
     const [searchQuery, setSearchQuery] = React.useState('');
     const [filterData, setFilterData] = React.useState([]);
     const [filterMode, setFilterMode] = React.useState(false);
+    const [firstRender, setFirstRender] = React.useState(true);
+
     const user = useUser()
 
     useEffect(() => {
@@ -21,8 +25,8 @@ const GuestsScreen = ({navigation}) => {
                     }
                 })
                 .then(function (response) {
-                    console.log(response.data)
                     setData(response.data.data)
+                    setFirstRender(false)
                 })
                 .catch(function (error) {
                     console.log('error: ',error);
@@ -48,9 +52,9 @@ const GuestsScreen = ({navigation}) => {
         setSearchQuery(query)
         setFilterData(
             data.filter((person) => {
-                if(person.first_name.toLowerCase().includes(query.toLowerCase()))
+                if(person.first_name?.toLowerCase().includes(query.toLowerCase()))
                     return person
-                else if(person.last_name.toLowerCase().includes(query.toLowerCase()))
+                else if(person.last_name?.toLowerCase().includes(query.toLowerCase()))
                     return person
             })
         )
@@ -67,15 +71,17 @@ const GuestsScreen = ({navigation}) => {
                 value={searchQuery}
                 style={{width: '90%', marginBottom: '2%'}}
             />
+            {firstRender && (<ActivityIndicator size={60} color={'magenta'} style={{position: 'absolute',left: 0,right: 0,bottom: 0,top: 0}}/>)}
             <FlatList
                 style={{height: '70%', width: '80%', alignContent: 'center'}}
                 data={filterMode? filterData:data}
                 renderItem={({item}) => <View style={{width: '100%',flex: 1, padding: '2%'}}>
-                                            <TouchableOpacity onPress={() => onPress(item)}>
-                                                <Text style={{color: 'black', justifyContent: 'center', alignItems: 'center', flex: 1}}>{item.first_name} {item.last_name}</Text>
-                                            </TouchableOpacity>
+                                            <Chip icon={() => <FontAwesome5 name="user-tie" size={20} color="black" />} onPress={() => onPress(item)}>
+                                                <Text style={{color: 'black', justifyContent: 'center', alignItems: 'center', flex: 1, fontWeight: 'bold'}}>{item.first_name} {item.last_name}</Text>
+                                            </Chip>
                                         </View>}
                 keyExtractor={item => item.id}
+                ListEmptyComponent={() => !firstRender && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Caption>No guests found.</Caption></View>}
             />
             <View style={{width: '80%', marginTop: '5%', flexDirection: 'row'}}>
                 <Button style={{width: '50%'}} mode="contained" onPress={scan}>
