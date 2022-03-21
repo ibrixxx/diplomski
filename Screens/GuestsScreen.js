@@ -4,7 +4,6 @@ import axios from "axios";
 import {API_URL} from "../Constants/Constants";
 import {useUser} from "../AuthProvider/AuthProvider";
 import {Button, Caption, Chip, Searchbar, Title} from "react-native-paper";
-import { AntDesign } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const GuestsScreen = ({navigation}) => {
@@ -13,26 +12,31 @@ const GuestsScreen = ({navigation}) => {
     const [filterData, setFilterData] = React.useState([]);
     const [filterMode, setFilterMode] = React.useState(false);
     const [firstRender, setFirstRender] = React.useState(true);
+    const [refreshing, setRefreshing] = useState(false)
+
 
     const user = useUser()
 
+    const getGuests = () => {
+        axios.get(`${API_URL}/${user.currentEvent.id}/guests`
+            , {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                }
+            })
+            .then(function (response) {
+                setData(response.data.data)
+                setFirstRender(false)
+                setRefreshing(false)
+            })
+            .catch(function (error) {
+                console.log('error: ',error);
+            })
+    }
+
     useEffect(() => {
-        const getGuests = () => {
-            axios.get(`${API_URL}/${user.currentEvent.id}/guests`
-                , {
-                    headers: {
-                        Authorization: `Bearer ${user.token}`,
-                    }
-                })
-                .then(function (response) {
-                    setData(response.data.data)
-                    setFirstRender(false)
-                })
-                .catch(function (error) {
-                    console.log('error: ',error);
-                })
-        }
-        getGuests()
+        if(firstRender)
+            getGuests()
     }, [])
 
     const onPress = (item) => {
@@ -76,18 +80,20 @@ const GuestsScreen = ({navigation}) => {
                 style={{height: '70%', width: '80%', alignContent: 'center'}}
                 data={filterMode? filterData:data}
                 renderItem={({item}) => <View style={{width: '100%',flex: 1, padding: '2%'}}>
-                                            <Chip icon={() => <FontAwesome5 name="user-tie" size={20} color="black" />} onPress={() => onPress(item)}>
-                                                <Text style={{color: 'black', justifyContent: 'center', alignItems: 'center', flex: 1, fontWeight: 'bold'}}>{item.first_name} {item.last_name}</Text>
+                                            <Chip icon={() => <FontAwesome5 name="user-tie" size={24} color="black" />} onPress={() => onPress(item)}>
+                                                <Text style={{color: 'black', justifyContent: 'center', alignItems: 'center', flex: 1, fontWeight: 'bold', fontSize: 24}}>{item.first_name} {item.last_name}</Text>
                                             </Chip>
                                         </View>}
                 keyExtractor={item => item.id}
+                onRefresh={() => {setRefreshing(true); getGuests()}}
+                refreshing={refreshing}
                 ListEmptyComponent={() => !firstRender && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Caption>No guests found.</Caption></View>}
             />
-            <View style={{width: '80%', marginTop: '5%', flexDirection: 'row'}}>
-                <Button style={{width: '50%'}} mode="contained" onPress={scan}>
+            <View style={{width: '80%', height: '5%', marginTop: '5%', flexDirection: 'row'}}>
+                <Button style={{flex: 1, justifyContent: 'center'}} mode="contained" onPress={scan}>
                     SCAN QR
                 </Button>
-                <Button style={{width: '50%'}} color={'lightgreen'} mode="contained" onPress={add}>
+                <Button style={{flex: 1, justifyContent: 'center'}} color={'lightgreen'} mode="contained" onPress={add}>
                     ADD GUEST
                 </Button>
             </View>

@@ -94,11 +94,11 @@ const AddGuestScreen = ({navigation, route}) => {
                         style={{marginBottom: '5%'}}
                     />
             </ScrollView>
-            <View style={{width: '80%', marginTop: '5%', flexDirection: 'row'}}>
-                <Button style={{width: '50%'}} color={'lightgreen'} mode="contained" onPress={save}>
+            <View style={{width: '80%', height: '5%', marginTop: '5%', flexDirection: 'row'}}>
+                <Button style={{flex: 1, justifyContent: 'center'}} color={'lightgreen'} mode="contained" onPress={save}>
                     SAVE
                 </Button>
-                <Button disabled={!guestId} style={{width: '50%'}} mode="contained" onPress={print}>
+                <Button disabled={!guestId} style={{flex: 1, justifyContent: 'center'}} mode="contained" onPress={print}>
                     PRINT
                 </Button>
             </View>

@@ -28,30 +28,34 @@ const DetailsScreen = ({navigation, route}) => {
 
     return (
         <SafeAreaView style={{height: '100%', flex: 1, paddingVertical: '5%', alignItems: 'center'}}>
-            <Title style={{color: 'black', flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: '5%'}}>{guest.first_name} {guest.last_name}</Title>
+            <Title style={{color: 'black', flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: '5%'}}>Guest details</Title>
             <DataTable style={{width: '90%', height: '70%'}}>
                 <DataTable.Row>
+                    <Caption style={{flex: 1}}>Full name: </Caption>
+                    <Text style={{color: 'black', flex: 3, fontSize: 20}}>{guest.first_name} {guest.last_name}</Text>
+                </DataTable.Row>
+                <DataTable.Row>
                     <Caption style={{flex: 1}}>Company: </Caption>
-                    <Text style={{color: 'black', flex: 3, paddingTop: '1%'}}>{guest.company}</Text>
+                    <Text style={{color: 'black', flex: 3, fontSize: 18}}>{guest.company}</Text>
                 </DataTable.Row>
                 <DataTable.Row>
                     <Caption style={{flex: 1}}>Email: </Caption>
-                    <Text style={{color: 'black', flex: 3, paddingTop: '1%'}}>{guest.email}</Text>
+                    <Text style={{color: 'black', flex: 3, fontSize: 19}}>{guest.email}</Text>
                 </DataTable.Row>
                 <DataTable.Row>
                     <Caption style={{flex: 1}}>City: </Caption>
-                    <Text style={{color: 'black', flex: 3, paddingTop: '1%'}}>{guest.city.name}</Text>
+                    <Text style={{color: 'black', flex: 3, fontSize: 20}}>{guest.city.name}</Text>
                 </DataTable.Row>
                 <DataTable.Row>
                     <Caption style={{flex: 1}}>Phone: </Caption>
-                    <Text style={{color: 'black', flex: 3, paddingTop: '1%'}}>{guest.phone}</Text>
+                    <Text style={{color: 'black', flex: 3, fontSize: 20}}>{guest.phone}</Text>
                 </DataTable.Row>
                 <DataTable.Row>
                     <Caption style={{flex: 1}}>Status: </Caption>
-                    <Text style={{color: 'black', flex: 3, paddingTop: '1%'}}>{guest.status}</Text>
+                    <Text style={{color: 'black', flex: 3, fontSize: 20}}>{guest.status}</Text>
                 </DataTable.Row>
             </DataTable>
-            <Button style={{width: '80%'}} mode="contained" onPress={print}>
+            <Button style={{width: '80%', height: '5%', justifyContent: 'center'}} mode="contained" onPress={print}>
                 PRINT
             </Button>
         </SafeAreaView>

@@ -7,8 +7,7 @@ import {useUser} from "../AuthProvider/AuthProvider";
 
 const ScanQrCode = ({navigation}) => {
     const [hasPermission, setHasPermission] = useState(null);
-    const [type, setType] = useState(Camera.Constants.Type.back);
-    const [code, setCode] = useState(null);
+    // const [code, setCode] = useState(null);
     const user = useUser()
 
     useEffect(() => {
@@ -25,7 +24,7 @@ const ScanQrCode = ({navigation}) => {
         return <Text>No access to camera</Text>;
     }
 
-    const getGuest = async () => {
+    const getGuest = async (code) => {
         if(code) {
             const newCode = code.substring(1, code.length - 1)
             const url = `${API_URL}/${user.currentEvent.id}/7/invitations/check/code/${newCode}`
@@ -42,12 +41,12 @@ const ScanQrCode = ({navigation}) => {
     return(
         <View style={styles.container}>
             <Camera
+                flashMode={'on'}
                 onBarCodeScanned={async (...args) => {
                     const data = args[0].data;
                     const result = JSON.stringify(data);
                     console.log(result);
-                    await setCode(result)
-                    await getGuest()
+                    await getGuest(result)
                 }}
                 barCodeScannerSettings={{
                     barCodeTypes: ['qr'],
